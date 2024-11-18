@@ -1,0 +1,56 @@
+name: Autograding Tests
+
+on:
+  - push
+  - workflow_dispatch
+  - repository_dispatch
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-tests:
+    # ubuntu-latest image comes with the latest stable versions of Rust tools
+    # https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2204-Readme.md#rust-tools
+    # https://github.com/rust-lang/rustup/tags
+    # https://releases.rs/
+    runs-on: ubuntu-latest
+    timeout-minutes: 12 # Even the Coopers' running test is faster than this...
+
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Setup Rust toolchain
+      run: |
+        rustup default stable
+        cargo install wasm-pack
+
+    # https://github.com/classroom-resources/autograding-io-grader
+    - name: Autograding build
+      id: auto-build
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Build release'
+        command: 'wasm-pack build --release --target web'
+        expected-output: ':-) Your wasm pkg is ready to publish at'
+        comparison-method: 'contains'
+
+    - name: Autograding test
+      id: auto-test
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Testing with Firefox'
+        command: 'wasm-pack test --headless --firefox'
+        expected-output: 'test result: ok.'
+        comparison-method: 'contains'
+
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        AUTO-BUILD_RESULTS: "${{steps.auto-build.outputs.result}}"
+        AUTO-TEST_RESULTS: "${{steps.auto-test.outputs.result}}"
+      with:
+        runners: auto-build,auto-test

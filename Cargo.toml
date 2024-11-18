@@ -1,0 +1,31 @@
+# Get all kanji from the database
+# https://www.kanjidatabase.com/sql.php
+# SELECT * FROM `KanjiTable`
+
+# https://rustwasm.github.io/docs/wasm-pack/commands/build.html
+# wasm-pack build --target web 
+
+# https://crates.io/crates/miniserve
+# miniserve . --index index.html
+
+[package]
+name = "wasm-kanji-search"
+version = "0.1.0"
+edition = "2021"
+description = "A simple web app to search for kanji"
+license = "MIT"
+
+# See more keys and their definitions at 
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+# cdylib = Generate library as a wasm file
+# rlib = Ability to run unit tests 'wasm-pack test'
+
+[dependencies]
+wasm-bindgen = { version = "0.2.95", features = ["serde"] }
+serde = { version = "1.0.215", features = ["derive"] }
+serde_derive = "1.0.215"
+serde-wasm-bindgen = "0.6.5"
+bincode = "1.3.3"

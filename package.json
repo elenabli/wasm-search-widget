@@ -1,0 +1,13 @@
+{
+  "name": "wasm-kanji-search",
+  "version": "1.0.0",
+  "description": "Testing the WASM Kanji Search web page",
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "1.48.2",
+    "playwright": "1.48.2"
+  }
+}
