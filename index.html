@@ -1,21 +1,37 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Search for Kanji from Joyo list by its stroke count</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      
-    </style>
+      body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+      input { width: 100%; padding: 10px; margin-bottom: 20px; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+      th { background-color: #f2f2f2; }
+  </style>
   </head>
   <body>
     <h1>Joyo Kanji</h1>
+    <div class="form-group">
+        <label for="strokeCount">Number of strokes:</label>
+        <input 
+            type="number" 
+            class="form-control" 
+            id="strokeCount" 
+            min="1" 
+            max="30"
+            placeholder="Enter stroke count...">
+            <button id="searchButton" style="padding: 10px;margin-bottom: 15px;">Search</button>
+    </div>
 
 
-
-    <table>
+    <table class="table mt-4">
       <thead>
         <tr>
           <th>Kanji</th>
+          <th>Strokes</th>
           <th>Onyomi</th>
           <th>Kunyomi</th>
         </tr>
@@ -24,6 +40,54 @@
       </tbody>
     </table>
     <script type="module">
+        import init, { search_by_strokes } from './pkg/wasm_kanji_search.js';
+
+        async function run() {
+            try {
+            // Initialize WASM
+            await init();
+
+            // Add event listener for the search button
+            const searchButton = document.getElementById('searchButton');
+            searchButton.addEventListener('click', async () => {
+                const strokeCountInput = document.getElementById('strokeCount').value;
+
+                // Validate input
+                const strokeCount = parseInt(strokeCountInput);
+                if (isNaN(strokeCount) || strokeCount <= 0) {
+                    alert('Please enter a valid number of strokes.');
+                    return;
+                }
+
+                try {
+                    // Call the WebAssembly function
+                    const result = await search_by_strokes(strokeCount);
+
+                    // Display results
+                    const resultList = document.getElementById('resultList');
+                    if (result.length === 0) {
+                        resultList.innerHTML = '<tr><td colspan="4">No results found.</td></tr>';
+                    } else {
+                        resultList.innerHTML = result.map(kanji => `
+                            <tr>
+                                <td>${kanji.Kanji || '-'}</td>
+                                <td>${kanji.Strokes || '-'}</td>
+                                <td>${kanji['On within Joyo'] || '-'}</td>
+                                <td>${kanji['Kun within Joyo'] || '-'}</td>
+                            </tr>
+                        `).join('');
+                    }
+                } catch (error) {
+                    console.error('Failed to search kanji:', error);
+                    alert('An error occurred while searching for kanji.');
+                }
+            });
+        } catch (error) {
+            console.error('Failed to initialize the application:', error);
+        }
+    }
+
+        run();
 
     </script>
   </body>
