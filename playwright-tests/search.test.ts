@@ -5,7 +5,8 @@ test('show the only kanji with 23 strokes', async ({ page }) => {
   await page.goto('/');
 
   // Input the search term
-  await page.fill('#filter', '23');
+  await page.fill('#strokeCount', '23');
+  await page.click('#searchButton');
 
   // Check that table has right amount of rows
   const tr = page.locator('table tbody tr');
@@ -18,7 +19,8 @@ test('person has both readings available', async ({ page }) => {
   await page.goto('/');
 
   // Input the search term
-  await page.fill('#filter', '2');
+  await page.fill('#strokeCount', '2');
+  await page.click('#searchButton');
 
   // Wait for the table to load with at least 10 rows
   const tr = page.locator('table tbody tr:nth-child(10)');
