@@ -37,6 +37,7 @@ jobs:
         command: 'wasm-pack build --release --target web'
         expected-output: 'Your wasm pkg is ready to publish at'
         comparison-method: 'contains'
+        timeout: 30
 
     - name: Autograding test
       id: auto-test
