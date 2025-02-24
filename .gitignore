@@ -26,3 +26,15 @@ package-lock.json
 playwright-report/
 test-report/
 test-results/
+
+# WASM build artifacts
+pkg/
+
+# Editor settings (optional)
+.vscode/
+.devcontainer/
+
+# Temporary files
+*.log
+*.tmp
+.DS_Store
