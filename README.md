@@ -4,12 +4,12 @@
 
 1. Pull the Docker image:
    ```bash
-   docker pull mydockerhubusername/wasm-search-widget:v1
+   docker pull elenablinova/wasm-search-widget
    ```
 
 2. Run the container:
     ```bash
-    docker run -p 8000:8000 elenablinova/search-widget
+    docker run -p 8000:8000 elenablinova/wasm-search-widget
     ```
 
 3. Open in a browser:
