@@ -8,13 +8,9 @@ COPY . .
 
 RUN wasm-pack build --release --target web
 
-FROM python:3.9-slim
+FROM nginx:alpine
 
-WORKDIR /web
+COPY index.html /usr/share/nginx/html/
+COPY --from=builder /app/pkg /usr/share/nginx/html/pkg
 
-COPY index.html ./
-COPY --from=builder /app/pkg ./pkg
-
-EXPOSE 8000
-
-CMD ["python", "-m", "http.server", "8000"]
+EXPOSE 80
